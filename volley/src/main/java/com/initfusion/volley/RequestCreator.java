@@ -1,7 +1,5 @@
 package com.initfusion.volley;
 
-import android.app.ProgressDialog;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -18,6 +16,7 @@ public class RequestCreator<ResponseType> {
     private JsonRequest.ResponseListener callback;
     private Class responseClass;
     private RequestQueue queue;
+    private JSONObject rowJsonBody;
 
     private String url;
 
@@ -36,13 +35,22 @@ public class RequestCreator<ResponseType> {
         return this;
     }
 
+    public RequestCreator setRowJsonBody(JSONObject rowJsonBody) {
+        this.rowJsonBody = rowJsonBody;
+        return this;
+    }
+
     public void execute()
     {
         if(responseClass==null)
             responseClass = Object.class;
 
+
+        if(rowJsonBody == null)
+            rowJsonBody = new JSONObject();
+
         JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(
-                Request.Method.GET, url, null, new JSONObject(), responseClass,
+                Request.Method.GET, url, null, rowJsonBody, responseClass,
                 createMyReqSuccessListener(), createMyReqErrorListener()) {
         };
 
@@ -61,6 +69,8 @@ public class RequestCreator<ResponseType> {
         };
     }
 
+
+
     private Response.ErrorListener createMyReqErrorListener() {
         return new Response.ErrorListener() {
             @Override
@@ -71,4 +81,6 @@ public class RequestCreator<ResponseType> {
             }
         };
     }
+
+
 }
