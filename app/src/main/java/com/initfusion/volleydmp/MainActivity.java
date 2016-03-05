@@ -42,14 +42,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
 
-                JsonRequest.with(context).load("http://52.35.166.109/bairows/api/shared?prcid=GETREQPEN&Param=10")
+                JsonRequest.with(context).load("url")
                         .execute();
 
-                JsonRequest.with(context).load("http://52.35.166.109/bairows/api/shared?prcid=SIGNIN&Param=ddharmesh@gmail.com|123")
+                JsonRequest.with(context).load("url")
                         .execute();
 
                 JsonRequest.with(context)
-                        .load("http://52.35.166.109/bairows/api/shared?prcid=SIGNIN&Param=ddenish@gmail.com|123")
+                        .load("url")
                         .setCallback(responseListener)
                         .setResponseClass(LoginResponse.class)
                         .execute();
