@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
                 JsonRequest.ResponseListener responseListener = new JsonRequest.ResponseListener() {
                     @Override
-                    public void onResult(Object result, String msg) {
+                    public void onResult(boolean isSuccess, Object result, String msg) {
                         LoginResponse loginResponse = (LoginResponse) result;
                     }
                 };
