@@ -8,9 +8,9 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonParseException;
 
 import org.json.JSONObject;
 
@@ -22,37 +22,38 @@ import java.util.Map;
 
 public class JacksonRequest<ResponseType> extends JsonRequest<ResponseType> {
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
-	private final Class<ResponseType> responseClass;
-	
-	public JacksonRequest(String url, JSONObject parameterObject,
-						  Class<ResponseType> responseClass,
-						  Response.Listener<ResponseType> listener,
-						  Response.ErrorListener errorListener) {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Class<ResponseType> responseClass;
 
-		this(Method.POST, url, null, parameterObject, responseClass, listener,
-				errorListener);
-	}
+    public JacksonRequest(String url, JSONObject parameterObject,
+                          Class<ResponseType> responseClass,
+                          Response.Listener<ResponseType> listener,
+                          Response.ErrorListener errorListener) {
 
-	public JacksonRequest(int method, String url, Map<String, String> headers,
-						  JSONObject parameterObject, Class<ResponseType> responseClass,
-						  Response.Listener<ResponseType> listener,
-						  Response.ErrorListener errorListener) {
+        this(Method.POST, url, null, parameterObject, responseClass, listener,
+                errorListener);
+    }
 
-		super(method, url, parameterObject.toString(), listener, errorListener);
+    public JacksonRequest(int method, String url, Map<String, String> headers,
+                          JSONObject parameterObject, Class<ResponseType> responseClass,
+                          Response.Listener<ResponseType> listener,
+                          Response.ErrorListener errorListener) {
 
-		this.responseClass = responseClass;
-	}
+        super(method, url, parameterObject.toString(), listener, errorListener);
 
-	public Map<String, String> getHeaders() throws AuthFailureError {
-		HashMap<String, String> headers = new HashMap<String, String>();
-		headers.put("Content-Type", "application/json; charset=utf-8");
-		return headers;
-	}
+        this.responseClass = responseClass;
+    }
 
-	@Override
-	protected Response<ResponseType> parseNetworkResponse(
-			NetworkResponse response) {
+    public Map<String, String> getHeaders() throws AuthFailureError {
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/json; charset=utf-8");
+        return headers;
+    }
+
+    @Override
+    protected Response<ResponseType> parseNetworkResponse(
+            NetworkResponse response) {
+
 		try {
 
 			String json = new String(response.data,
@@ -60,10 +61,7 @@ public class JacksonRequest<ResponseType> extends JsonRequest<ResponseType> {
 			
 			Log.e("Response", json);
 
-
-
 			ResponseType result = objectMapper.readValue(json, responseClass);
-
 
 			return Response.success(result,
 					HttpHeaderParser.parseCacheHeaders(response));
@@ -86,6 +84,5 @@ public class JacksonRequest<ResponseType> extends JsonRequest<ResponseType> {
 			Log.i("Jackson Error", e.getMessage());
 			return Response.error(new ParseError(e));
 		}
-	}
-
+    }
 }

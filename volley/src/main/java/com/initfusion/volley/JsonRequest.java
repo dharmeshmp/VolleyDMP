@@ -3,7 +3,6 @@ package com.initfusion.volley;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.util.Log;
 
 import com.android.volley.Request.Method;
@@ -16,207 +15,205 @@ import org.json.JSONObject;
 
 public class JsonRequest<ResponseType> {
 
-	private RequestQueue queue;
-	private ResponseListener callback;
-	ProgressDialog dialog;
-	private Context context;
-	SharedPreferences pref;
-	int socketTimeout = 60000;
-	private Class<ResponseType> responseClass;
+    private RequestQueue queue;
+    private ResponseListener callback;
+    ProgressDialog dialog;
+    private Context context;
+    SharedPreferences pref;
+    int socketTimeout = 60000;
+    private Class<ResponseType> responseClass;
 
-	@Deprecated
-	public JsonRequest(Context context, RequestQueue queue, Class<ResponseType> responseClass) {
-		super();
-		this.queue = queue;
-		dialog = new ProgressDialog(context);
-		this.context = context;
-		this.responseClass= responseClass;
-	}
+    @Deprecated
+    public JsonRequest(Context context, RequestQueue queue, Class<ResponseType> responseClass) {
+        super();
+        this.queue = queue;
+        dialog = new ProgressDialog(context);
+        this.context = context;
+        this.responseClass = responseClass;
+    }
 
-	public JsonRequest(Context context, RequestQueue queue) {
-		super();
-		this.queue = queue;
-		dialog = new ProgressDialog(context);
-		this.context = context;
-	}
+    public JsonRequest(Context context, RequestQueue queue) {
+        super();
+        this.queue = queue;
+        dialog = new ProgressDialog(context);
+        this.context = context;
+    }
 
-	public void loadData(String url,String loadingMassage, ResponseListener callback) {
-		this.callback = callback;
+    public void loadData(String url, String loadingMassage, ResponseListener callback) {
+        this.callback = callback;
 
-		Log.e("URL", url);
+        Log.e("URL", url);
 
-		JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(
-				Method.GET, url, null, new JSONObject(), responseClass,
-				createMyReqSuccessListener(), createMyReqErrorListener()) {
-		};
+        JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(
+                Method.GET, url, null, new JSONObject(), responseClass,
+                createMyReqSuccessListener(), createMyReqErrorListener()) {
+        };
 
-		if (dialog != null) {
-			dialog.show();
-			dialog.setMessage(loadingMassage);
-			dialog.setIndeterminate(true);
-			dialog.setCancelable(false);
-		}
+        if (dialog != null) {
+            dialog.show();
+            dialog.setMessage(loadingMassage);
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+        }
 
-		// RetryPolicy retryPolicy = new DefaultRetryPolicy(socketTimeout,
-		// DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-		// DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-		// jsonObjReq.setRetryPolicy(retryPolicy);
+        // RetryPolicy retryPolicy = new DefaultRetryPolicy(socketTimeout,
+        // DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+        // DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        // jsonObjReq.setRetryPolicy(retryPolicy);
 
-		queue.add(jsonObjReq);
-	}
+        queue.add(jsonObjReq);
+    }
 
-	public void loadData(int method, JSONObject data, String url,
-			ResponseListener callback) {
-		this.callback = callback;
+    public void loadData(int method, JSONObject data, String url,
+                         ResponseListener callback) {
+        this.callback = callback;
 
-		Log.e("URL", url);
-		Log.e("Request", data.toString());
+        Log.e("URL", url);
+        Log.e("Request", data.toString());
 
-		JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(
-				method, url, null, data,responseClass,
-				createMyReqSuccessListener(), createMyReqErrorListener()) {
-		};
+        JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(
+                method, url, null, data, responseClass,
+                createMyReqSuccessListener(), createMyReqErrorListener()) {
+        };
 
-		if (dialog != null) {
-			dialog.show();
-			dialog.setMessage("Loading....");
-			dialog.setIndeterminate(true);
-			dialog.setCancelable(false);
-		}
+        if (dialog != null) {
+            dialog.show();
+            dialog.setMessage("Loading....");
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+        }
 
-		// RetryPolicy retryPolicy = new DefaultRetryPolicy(socketTimeout,
-		// DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-		// DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-		// jsonObjReq.setRetryPolicy(retryPolicy);
+        // RetryPolicy retryPolicy = new DefaultRetryPolicy(socketTimeout,
+        // DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+        // DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        // jsonObjReq.setRetryPolicy(retryPolicy);
 
-		queue.add(jsonObjReq);
-	}
+        queue.add(jsonObjReq);
+    }
 
-	public void loadData(boolean isdialog, String url, ResponseListener callback) {
-		this.callback = callback;
-		Log.e("URL", url);
+    public void loadData(boolean isdialog, String url, ResponseListener callback) {
+        this.callback = callback;
+        Log.e("URL", url);
 
-		JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(
-				Method.GET, url, null, new JSONObject(), responseClass,
-				createMyReqSuccessListener(), createMyReqErrorListener()) {
-		};
+        JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(
+                Method.GET, url, null, new JSONObject(), responseClass,
+                createMyReqSuccessListener(), createMyReqErrorListener()) {
+        };
 
-		if (dialog != null) {
-			if (isdialog) {
-				dialog.show();
-				dialog.setMessage("Loading....");
-				dialog.setIndeterminate(true);
-				dialog.setCancelable(false);
-			}
-		}
+        if (dialog != null) {
+            if (isdialog) {
+                dialog.show();
+                dialog.setMessage("Loading....");
+                dialog.setIndeterminate(true);
+                dialog.setCancelable(false);
+            }
+        }
 
 
-		queue.add(jsonObjReq);
-	}
+        queue.add(jsonObjReq);
+    }
 
-	public void loadData(int method, JSONObject data, String url,Class responseClass,
-						 ResponseListener callback) {
-		this.callback = callback;
+    public void loadData(int method, JSONObject data, String url, Class responseClass,
+                         ResponseListener callback) {
+        this.callback = callback;
 
-		Log.e("URL", url);
-		Log.e("Request", data.toString());
+        Log.e("URL", url);
+        Log.e("Request", data.toString());
 
-		JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(
-				method, url, null, data,responseClass,
-				createMyReqSuccessListener(), createMyReqErrorListener()) {
-		};
+        JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(
+                method, url, null, data, responseClass,
+                createMyReqSuccessListener(), createMyReqErrorListener()) {
+        };
 
-		if (dialog != null) {
-			dialog.show();
-			dialog.setMessage("Loading....");
-			dialog.setIndeterminate(true);
-			dialog.setCancelable(false);
-		}
+        if (dialog != null) {
+            dialog.show();
+            dialog.setMessage("Loading....");
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+        }
 
-		// RetryPolicy retryPolicy = new DefaultRetryPolicy(socketTimeout,
-		// DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-		// DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-		// jsonObjReq.setRetryPolicy(retryPolicy);
+        // RetryPolicy retryPolicy = new DefaultRetryPolicy(socketTimeout,
+        // DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+        // DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        // jsonObjReq.setRetryPolicy(retryPolicy);
 
-		queue.add(jsonObjReq);
-	}
+        queue.add(jsonObjReq);
+    }
 
-	private Response.Listener<ResponseType> createMyReqSuccessListener() {
-		return new Response.Listener<ResponseType>() {
-			@Override
-			public void onResponse(ResponseType response) {
+    private Response.Listener<ResponseType> createMyReqSuccessListener() {
+        return new Response.Listener<ResponseType>() {
+            @Override
+            public void onResponse(ResponseType response) {
 
-				ActivityHelper.dismissDialog(dialog);
-				if(callback!=null)
-				callback.onResult(response, "Success");
-			}
-		};
-	}
+                ActivityHelper.dismissDialog(dialog);
+                if (callback != null)
+                    callback.onResult(true, response, "Success");
+            }
+        };
+    }
 
-	private Response.ErrorListener createMyReqErrorListener() {
-		return new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
+    private Response.ErrorListener createMyReqErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-				ActivityHelper.dismissDialog(dialog);
+                ActivityHelper.dismissDialog(dialog);
 
-				if(callback!=null)
-				callback.onResult(null, "Network Problem");
-			}
-		};
-	}
+                if (callback != null)
+                    callback.onResult(false, null, "Network Problem");
+            }
+        };
+    }
 
-	public interface ResponseListener {
-		void onResult(Object result, String msg);
-	}
+    public interface ResponseListener<T> {
+        void onResult(boolean isSuccess, T result, String msg);
+    }
 
-	public static class Builder {
+    public static class Builder {
 
-		private final Context context;
-		private RequestQueue queue;
-		private String dialogTitle;
+        private final Context context;
+        private RequestQueue queue;
+        private String dialogTitle;
 
-		public Builder(Context context) {
-			if (context == null) {
-				throw new IllegalArgumentException("Context must not be null.");
-			}
-			this.context = context;
-		}
+        public Builder(Context context) {
+            if (context == null) {
+                throw new IllegalArgumentException("Context must not be null.");
+            }
+            this.context = context;
+        }
 
-		public JsonRequest build() {
-			Context context = this.context;
+        public JsonRequest build() {
+            Context context = this.context;
 
-			if(queue == null)
-				queue = Volley.newRequestQueue(context);
+            if (queue == null)
+                queue = Volley.newRequestQueue(context);
 
-			if(dialogTitle == null)
-				dialogTitle = "loading..";
+            if (dialogTitle == null)
+                dialogTitle = "loading..";
 
-			JsonRequest request=new JsonRequest(context,queue);
+            return new JsonRequest<>(context, queue);
+        }
+    }
 
-			return request;
-		}
-	}
+    static JsonRequest singleton = null;
 
-	static JsonRequest singleton = null;
+    public static JsonRequest with(Context context) {
+        if (singleton == null) {
+            synchronized (JsonRequest.class) {
+                if (singleton == null) {
+                    singleton = new Builder(context).build();
+                }
+            }
+        }
+        return singleton;
+    }
 
-	public static JsonRequest with(Context context) {
-		if (singleton == null) {
-			synchronized (JsonRequest.class) {
-				if (singleton == null) {
-					singleton = new Builder(context).build();
-				}
-			}
-		}
-		return singleton;
-	}
+    public RequestCreator<ResponseType> load(String path) {
 
-	public RequestCreator load(String path) {
+        if (path.trim().length() == 0) {
+            throw new IllegalArgumentException("Path must not be empty.");
+        }
 
-		if (path.trim().length() == 0) {
-			throw new IllegalArgumentException("Path must not be empty.");
-		}
-
-		return new RequestCreator(path,queue);
-	}
+        return new RequestCreator<>(path, queue);
+    }
 }
