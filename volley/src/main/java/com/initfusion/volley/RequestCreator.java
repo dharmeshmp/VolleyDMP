@@ -59,9 +59,8 @@ public class RequestCreator<ResponseType> {
 
     public void execute()
     {
-        /*if(responseClass==null)
+        if(responseClass==null)
             setResponseClass(Object.class);
-*/
 
         if(rowJsonBody == null)
             rowJsonBody = new JSONObject();
@@ -83,8 +82,6 @@ public class RequestCreator<ResponseType> {
             };
             queue.add(jsonObjReq);
         }
-
-
     }
 
 
@@ -109,6 +106,4 @@ public class RequestCreator<ResponseType> {
             }
         };
     }
-
-
 }
