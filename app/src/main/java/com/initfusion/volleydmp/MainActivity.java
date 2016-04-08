@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.initfusion.volley.JsonRequest;
 
@@ -47,9 +48,10 @@ public class MainActivity extends AppCompatActivity {
                         .execute();
 
                 JsonRequest.with(context)
-                        .load("url")
+                        .load("http://172.18.1.13:2856/clickkeen/social/GetFriendGroupList?IdUser=830&MobileToken=z895zr4XdDEXFQJOiU4c&MaskSession=9ad94f96f6bfa9e31e615fa2ecf4e880&IdRequest=2&IdJourney=0&IdUserFriend=0&IdGroup=150")
                         .setCallback(responseListener)
                         .setResponseClass(LoginResponse.class)
+                        .setDialog()
                         .execute();
 
             }

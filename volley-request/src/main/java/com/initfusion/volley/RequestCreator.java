@@ -1,5 +1,8 @@
 package com.initfusion.volley;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -25,8 +28,12 @@ public class RequestCreator<ResponseType> {
     private String url;
     private int method = -2;
     private boolean isJackson = false;
+    private Context mContext;
+    private Dialog mDialog;
+    private String loadingMassage;
 
-    public RequestCreator(String url, RequestQueue queue) {
+    public RequestCreator(Context context, String url, RequestQueue queue) {
+        mContext = context;
         this.url = url;
         this.queue = queue;
     }
@@ -56,7 +63,50 @@ public class RequestCreator<ResponseType> {
         return this;
     }
 
-    public void execute() {
+    public RequestCreator setDialog() {
+
+        if (mDialog == null) {
+
+            loadingMassage = "Loading..";
+
+            ProgressDialog dialog = new ProgressDialog(mContext);
+            dialog.setMessage(loadingMassage);
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+
+            mDialog = dialog;
+        }
+
+        return this;
+    }
+
+    public RequestCreator setDialog(String dialogTitle) {
+
+        if (mDialog == null) {
+
+            loadingMassage = dialogTitle;
+
+            ProgressDialog dialog = new ProgressDialog(mContext);
+            dialog.setMessage(loadingMassage);
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+
+            mDialog = dialog;
+        }
+
+        return this;
+    }
+
+    public RequestCreator setDialog(Dialog dialog) {
+
+        if (mDialog == null) {
+            mDialog = dialog;
+        }
+
+        return this;
+    }
+
+    public Request execute() {
         if (responseClass == null)
             setResponseClass(Object.class);
 
@@ -68,16 +118,22 @@ public class RequestCreator<ResponseType> {
 
         Log.e("Request", url);
 
+        if(mDialog!=null)
+            mDialog.show();
+
         if (isJackson) {
             JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(method, url, null, rowJsonBody, (Class) responseClass,
                     createMyReqSuccessListener(), createMyReqErrorListener()) {
             };
             queue.add(jsonObjReq);
+
+            return jsonObjReq;
         } else {
             GsonRequest<ResponseType> jsonObjReq = new GsonRequest<ResponseType>(method, url, null, rowJsonBody, responseClass,
                     createMyReqSuccessListener(), createMyReqErrorListener()) {
             };
             queue.add(jsonObjReq);
+            return jsonObjReq;
         }
     }
 
@@ -85,6 +141,8 @@ public class RequestCreator<ResponseType> {
         return new Response.Listener<ResponseType>() {
             @Override
             public void onResponse(ResponseType response) {
+
+                ActivityHelper.dismissDialog(mDialog);
 
                 if (callback != null)
                     callback.onSuccess(response);
@@ -96,6 +154,9 @@ public class RequestCreator<ResponseType> {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                ActivityHelper.dismissDialog(mDialog);
+
                 if (callback != null)
                     callback.onError(error);
             }

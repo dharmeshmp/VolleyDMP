@@ -215,6 +215,6 @@ public class JsonRequest<ResponseType> {
             throw new IllegalArgumentException("Path must not be empty.");
         }
 
-        return new RequestCreator<>(path, queue);
+        return new RequestCreator<>(context,path, queue);
     }
 }
