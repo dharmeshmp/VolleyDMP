@@ -147,7 +147,7 @@ public class JsonRequest<ResponseType> {
 
                 ActivityHelper.dismissDialog(dialog);
                 if (callback != null)
-                    callback.onResult(true, response, "Success");
+                    callback.onSuccess(response);
             }
         };
     }
@@ -160,13 +160,14 @@ public class JsonRequest<ResponseType> {
                 ActivityHelper.dismissDialog(dialog);
 
                 if (callback != null)
-                    callback.onResult(false, null, "Network Problem");
+                    callback.onError(error);
             }
         };
     }
 
     public interface ResponseListener<T> {
-        void onResult(boolean isSuccess, T result, String msg);
+        void onSuccess(T result);
+        void onError(VolleyError error);
     }
 
     public static class Builder {

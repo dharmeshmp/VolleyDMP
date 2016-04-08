@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonParseException;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -54,35 +55,43 @@ public class JacksonRequest<ResponseType> extends JsonRequest<ResponseType> {
     protected Response<ResponseType> parseNetworkResponse(
             NetworkResponse response) {
 
-		try {
+        try {
 
-			String json = new String(response.data,
-					HttpHeaderParser.parseCharset(response.headers));
-			
-			Log.e("Response", json);
+            String json = new String(response.data,
+                    HttpHeaderParser.parseCharset(response.headers));
 
-			ResponseType result = objectMapper.readValue(json, responseClass);
+            Log.e("Response", json);
 
-			return Response.success(result,
-					HttpHeaderParser.parseCacheHeaders(response));
+            ResponseType result;
+            if (JSONObject.class == responseClass) {
+                result = (ResponseType) new JSONObject(json);
+            } else {
+                result = objectMapper.readValue(json, responseClass);
+            }
 
-		} catch (UnsupportedEncodingException e) {
+            return Response.success(result,
+                    HttpHeaderParser.parseCacheHeaders(response));
 
-			Log.i("Jackson Error", e.getMessage());
+        } catch (UnsupportedEncodingException e) {
 
-			return Response.error(new ParseError(e));
-		} catch (JsonMappingException e) {
+            Log.i("Jackson Error", e.getMessage());
 
-			Log.i("Jackson Error", e.getMessage());
-			return Response.error(new ParseError(e));
-		} catch (JsonParseException e) {
+            return Response.error(new ParseError(e));
+        } catch (JsonMappingException e) {
 
-			Log.i("Jackson Error", e.getMessage());
-			return Response.error(new ParseError(e));
-		} catch (IOException e) {
+            Log.i("Jackson Error", e.getMessage());
+            return Response.error(new ParseError(e));
+        } catch (JsonParseException e) {
 
-			Log.i("Jackson Error", e.getMessage());
-			return Response.error(new ParseError(e));
-		}
+            Log.i("Jackson Error", e.getMessage());
+            return Response.error(new ParseError(e));
+        } catch (IOException e) {
+
+            Log.i("Jackson Error", e.getMessage());
+            return Response.error(new ParseError(e));
+        } catch (JSONException e) {
+            Log.i("Jackson Error", e.getMessage());
+            return Response.error(new ParseError(e));
+        }
     }
 }

@@ -23,10 +23,10 @@ public class RequestCreator<ResponseType> {
     private RequestQueue queue;
     private JSONObject rowJsonBody;
     private String url;
-    private int method=-2;
-    private boolean isJackson=false;
+    private int method = -2;
+    private boolean isJackson = false;
 
-    public RequestCreator(String url,RequestQueue queue) {
+    public RequestCreator(String url, RequestQueue queue) {
         this.url = url;
         this.queue = queue;
     }
@@ -51,32 +51,29 @@ public class RequestCreator<ResponseType> {
         return this;
     }
 
-    public RequestCreator setJackson()
-    {
+    public RequestCreator setJackson() {
         isJackson = true;
         return this;
     }
 
-    public void execute()
-    {
-        if(responseClass==null)
+    public void execute() {
+        if (responseClass == null)
             setResponseClass(Object.class);
 
-        if(rowJsonBody == null)
+        if (rowJsonBody == null)
             rowJsonBody = new JSONObject();
 
-        if(method == -2)
+        if (method == -2)
             method = Request.Method.POST;
 
         Log.e("Request", url);
 
-        if(isJackson) {
-            JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(method, url, null, rowJsonBody,(Class)responseClass,
+        if (isJackson) {
+            JacksonRequest<ResponseType> jsonObjReq = new JacksonRequest<ResponseType>(method, url, null, rowJsonBody, (Class) responseClass,
                     createMyReqSuccessListener(), createMyReqErrorListener()) {
             };
             queue.add(jsonObjReq);
-        }
-        else {
+        } else {
             GsonRequest<ResponseType> jsonObjReq = new GsonRequest<ResponseType>(method, url, null, rowJsonBody, responseClass,
                     createMyReqSuccessListener(), createMyReqErrorListener()) {
             };
@@ -84,14 +81,13 @@ public class RequestCreator<ResponseType> {
         }
     }
 
-
     private Response.Listener<ResponseType> createMyReqSuccessListener() {
         return new Response.Listener<ResponseType>() {
             @Override
             public void onResponse(ResponseType response) {
 
-                if(callback!=null)
-                    callback.onResult(true,response, "Success");
+                if (callback != null)
+                    callback.onSuccess(response);
             }
         };
     }
@@ -100,9 +96,8 @@ public class RequestCreator<ResponseType> {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
-                if(callback!=null)
-                    callback.onResult(false,null, "Network Problem");
+                if (callback != null)
+                    callback.onError(error);
             }
         };
     }

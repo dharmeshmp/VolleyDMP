@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.volley.VolleyError;
 import com.initfusion.volley.JsonRequest;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,8 +30,13 @@ public class MainActivity extends AppCompatActivity {
 
                 JsonRequest.ResponseListener responseListener = new JsonRequest.ResponseListener() {
                     @Override
-                    public void onResult(boolean isSuccess, Object result, String msg) {
+                    public void onSuccess(Object result) {
                         LoginResponse loginResponse = (LoginResponse) result;
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+
                     }
                 };
 
